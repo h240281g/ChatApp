@@ -25,19 +25,26 @@ let MessageService = class MessageService {
         this.messageModel = messageModel;
         this.userModel = userModel;
     }
-    async createMsg(SenderID, createMsgDto) {
+    async createMsg(senderID, createMsgDto) {
+        await this.validateObjectIDSR(senderID, createMsgDto.receiverID);
         const newMsg = new this.messageModel({
-            senderID: SenderID,
+            senderID,
             ...createMsgDto,
         });
-        await newMsg.save();
-        return newMsg;
+        return await newMsg.save();
     }
     async getUserById(id) {
+        if (!mongoose_2.Types.ObjectId.isValid(id)) {
+            throw new common_1.NotFoundException('Incorrect Format:  Verify User or Receiver ObjectIDs');
+        }
         const user = await this.userModel.findById(id);
-        return user;
+        if (!user) {
+            throw new common_1.NotFoundException('User Not Found:  Verify User or Receiver ObjectIDs');
+        }
+        return `correct & exists: true`;
     }
     async getMessages(senderID, receiverID) {
+        await this.validateObjectIDSR(senderID, receiverID);
         return await this.messageModel
             .find({
             $or: [
@@ -49,17 +56,15 @@ let MessageService = class MessageService {
             .sort({ createdAt: 1 });
     }
     async validateObjectIDSR(senderID, receiverID) {
-        if (!mongoose_2.Types.ObjectId.isValid(senderID)) {
-            throw new common_1.NotFoundException('Invalid sender ObjectID');
-        }
         const sender = await this.getUserById(senderID);
-        const receiver = await this.getUserById(receiverID);
         if (!sender) {
             throw new common_1.NotFoundException('Sender not found');
         }
+        const receiver = await this.getUserById(receiverID);
         if (!receiver) {
             throw new common_1.NotFoundException('Receiver not found');
         }
+        return `All Validations Done on Sender and Receiver`;
     }
 };
 exports.MessageService = MessageService;

@@ -19,15 +19,12 @@ export class MessageController {
   @UsePipes(new ValidationPipe())
   async createMsg(
     @Param('id') senderID: string,
-    @Body() createMsgDto: CreateMessageDto,
-  ) {
-    this.messageService.validateObjectIDSR(senderID, createMsgDto.receiverID);
+    @Body() createMsgDto: CreateMessageDto, ) {
     return this.messageService.createMsg(senderID, createMsgDto);
   }
   @Get()
   @UsePipes(new ValidationPipe())
-  async getMessages(@Body() { senderID, receiverID }) {
-    this.messageService.validateObjectIDSR(senderID, receiverID);
+  async getMessages(@Body(ValidationPipe) { senderID, receiverID }) {
     return this.messageService.getMessages(senderID, receiverID);
   }
 }
