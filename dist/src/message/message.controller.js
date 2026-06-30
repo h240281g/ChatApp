@@ -22,11 +22,9 @@ let MessageController = class MessageController {
         this.messageService = messageService;
     }
     async createMsg(senderID, createMsgDto) {
-        this.messageService.validateObjectIDSR(senderID, createMsgDto.receiverID);
         return this.messageService.createMsg(senderID, createMsgDto);
     }
     async getMessages({ senderID, receiverID }) {
-        this.messageService.validateObjectIDSR(senderID, receiverID);
         return this.messageService.getMessages(senderID, receiverID);
     }
 };
@@ -43,7 +41,7 @@ __decorate([
 __decorate([
     (0, common_1.Get)(),
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Body)(common_1.ValidationPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)

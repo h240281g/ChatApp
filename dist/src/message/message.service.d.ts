@@ -6,20 +6,14 @@ export declare class MessageService {
     private messageModel;
     private userModel;
     constructor(messageModel: Model<Message>, userModel: Model<User>);
-    createMsg(SenderID: string, createMsgDto: CreateMessageDto): Promise<import("mongoose").Document<unknown, {}, Message, {}, import("mongoose").DefaultSchemaOptions> & Message & {
+    createMsg(senderID: string, createMsgDto: CreateMessageDto): Promise<import("mongoose").Document<unknown, {}, Message, {}, import("mongoose").DefaultSchemaOptions> & Message & {
         _id: Types.ObjectId;
     } & {
         __v: number;
     } & {
         id: string;
     }>;
-    getUserById(id: string): Promise<import("mongoose").Document<unknown, {}, User, {}, import("mongoose").DefaultSchemaOptions> & User & {
-        _id: Types.ObjectId;
-    } & {
-        __v: number;
-    } & {
-        id: string;
-    }>;
+    getUserById(id: string): Promise<string>;
     getMessages(senderID: string, receiverID: string): Promise<(import("mongoose").Document<unknown, {}, Message, {}, import("mongoose").DefaultSchemaOptions> & Message & {
         _id: Types.ObjectId;
     } & {
@@ -27,5 +21,5 @@ export declare class MessageService {
     } & {
         id: string;
     })[]>;
-    validateObjectIDSR(senderID: string, receiverID: string): Promise<void>;
+    validateObjectIDSR(senderID: string, receiverID: string): Promise<string>;
 }

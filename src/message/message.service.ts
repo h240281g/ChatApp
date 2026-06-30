@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateMessageDto } from './dto/createMessage.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Message } from './schema/messageSchema';
@@ -11,20 +15,32 @@ export class MessageService {
     @InjectModel(Message.name) private messageModel: Model<Message>,
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
-  async createMsg(SenderID: string, createMsgDto: CreateMessageDto) {
+  async createMsg(senderID: string, createMsgDto: CreateMessageDto) {
+    await this.validateObjectIDSR(senderID, createMsgDto.receiverID);
+
     const newMsg = new this.messageModel({
-      senderID: SenderID,
+      senderID,
       ...createMsgDto,
     });
-    await newMsg.save();
-    return newMsg;
+
+    return await newMsg.save();
   }
   async getUserById(id: string) {
+    if (!Types.ObjectId.isValid(id)) {
+        throw new NotFoundException('Incorrect Format:  Verify User or Receiver ObjectIDs');
+
+    }
     const user = await this.userModel.findById(id);
-    return user;
+
+    if (!user) {
+      throw new NotFoundException('User Not Found:  Verify User or Receiver ObjectIDs');
+    }
+
+    return  `correct & exists: true`
   }
 
   async getMessages(senderID: string, receiverID: string) {
+    await this.validateObjectIDSR(senderID, receiverID);
     return await this.messageModel
       .find({
         $or: [
@@ -36,20 +52,17 @@ export class MessageService {
       .sort({ createdAt: 1 });
   }
   async validateObjectIDSR(senderID: string, receiverID: string) {
-    if (!Types.ObjectId.isValid(senderID)) {
-      throw new NotFoundException('Invalid sender ObjectID');
-    }
-
-    const sender = await this.getUserById(senderID);
-    const receiver = await this.getUserById(receiverID);
-
-    if (!sender) {
-      throw new NotFoundException('Sender not found');
-    }
-    if (!receiver) {
-      throw new NotFoundException('Receiver not found');
-    }
-  }
   
+      const sender = await this.getUserById(senderID);
+      if (!sender) {
+        throw new NotFoundException('Sender not found');
+      }
+      const receiver = await this.getUserById(receiverID);
+      if (!receiver) {
+        throw new NotFoundException('Receiver not found');
+      }
+            
+      return `All Validations Done on Sender and Receiver`
 
+  }
 }
