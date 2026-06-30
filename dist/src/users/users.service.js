@@ -56,20 +56,6 @@ let UsersService = class UsersService {
     constructor(userModel) {
         this.userModel = userModel;
     }
-    async validateUser({ username, password }) {
-        const findUser = await this.userModel.findOne({ username }).select('+password');
-        if (!findUser) {
-            throw new common_1.NotFoundException('User not Found');
-        }
-        const isMatch = await bcrypt.compare(password, findUser.password);
-        if (isMatch) {
-            console.log('Login successful');
-        }
-        else
-            throw new common_1.UnauthorizedException('Invalid password');
-        const { password: _, ...result } = findUser.toObject();
-        return result;
-    }
     async createUser({ username, ...createUserDto }) {
         const findUser = await this.userModel.findOne({ username });
         if (!findUser) {
@@ -85,6 +71,16 @@ let UsersService = class UsersService {
         }
         else
             throw new common_1.ConflictException("Username already exists");
+    }
+    async getAllUsers() {
+        return await this.userModel.find();
+    }
+    getUser(username) {
+        return this.userModel.findOne({ username }).populate(['settings', 'Posts']);
+    }
+    async getUserById(id) {
+        const user = await this.userModel.findById(id).populate(['settings', 'Posts']);
+        return user;
     }
 };
 exports.UsersService = UsersService;

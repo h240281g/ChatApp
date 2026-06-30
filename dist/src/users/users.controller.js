@@ -15,29 +15,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
-const login_Dto_1 = require("../auth/dto/login.Dto");
 const createUserDto_1 = require("./dto/createUserDto");
+const mongoose_1 = require("mongoose");
 let UsersController = class UsersController {
     userService;
     constructor(userService) {
         this.userService = userService;
     }
-    validateUser(loginDto) {
-        return this.userService.validateUser(loginDto);
-    }
     createUser({ username, ...createUserDto }) {
         return this.userService.createUser({ username, ...createUserDto });
     }
+    getUser(username) {
+        const user = this.userService.getUser(username);
+        return user;
+    }
+    geAlltUsers() {
+        const user = this.userService.getAllUsers();
+        return user;
+    }
+    async getUserById(id) {
+        if (!mongoose_1.Types.ObjectId.isValid(id)) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        const user = await this.userService.getUserById(id);
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        return user;
+    }
 };
 exports.UsersController = UsersController;
-__decorate([
-    (0, common_1.Post)('/auth'),
-    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_Dto_1.LoginDto]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "validateUser", null);
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.UsePipes)(new common_1.ValidationPipe()),
@@ -46,6 +53,27 @@ __decorate([
     __metadata("design:paramtypes", [createUserDto_1.CreateUserDto]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "createUser", null);
+__decorate([
+    (0, common_1.Get)('username/:username'),
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    __param(0, (0, common_1.Param)('username')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "getUser", null);
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "geAlltUsers", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUserById", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

@@ -1,12 +1,10 @@
 import {
     ConflictException,
-    HttpException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { privateDecrypt } from 'crypto';
 import { Model } from 'mongoose';
 import { User } from './schema/userSchema';
 import { LoginDto } from 'src/auth/dto/login.Dto';
@@ -17,22 +15,9 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  async validateUser({ username, password }: LoginDto) {
-    const findUser = await this.userModel.findOne({ username }).select('+password');
-    if (!findUser) {
-      throw new NotFoundException('User not Found');
-    }
-    const isMatch = await bcrypt.compare(password, findUser.password);
-
-    if (isMatch) {
-      console.log('Login successful');
-    } else throw new UnauthorizedException('Invalid password');
-
-    const { password: _, ...result } = findUser.toObject();
-    return result;
-  }
-
-  async createUser({username,...createUserDto}: CreateUserDto) {
+  
+  async createUser({username,...createUserDto}: CreateUserDto) 
+  {
     const findUser = await this.userModel.findOne({username});
     if (!findUser) {
         const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
@@ -50,5 +35,17 @@ export class UsersService {
     }
     else throw new ConflictException("Username already exists");
    
+  }
+  async getAllUsers() {
+    return await this.userModel.find();
+  }
+
+  getUser(username: string) {
+    return this.userModel.findOne({ username }).populate(['settings','Posts']);
+  }
+
+  async getUserById(id: string) {
+    const user = await this.userModel.findById(id).populate(['settings','Posts']);
+    return user;
   }
 }
