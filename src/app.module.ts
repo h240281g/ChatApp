@@ -5,7 +5,7 @@ import { MessageModule } from './message/message.module';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
-  imports: [UsersModule, AuthModule, MessageModule, MongooseModule.forRoot('mongodb+srv://elias:Wayne1905@assignmentlab60.tp05cfm.mongodb.net/ChatApp')],
+  imports: [UsersModule, AuthModule, MessageModule, MongooseModule.forRoot(process.env.mongouri)],
   controllers: [],
   providers: [],
 })
