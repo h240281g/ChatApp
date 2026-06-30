@@ -8,36 +8,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthController = void 0;
+exports.LocalStrategy = void 0;
 const common_1 = require("@nestjs/common");
-const auth_service_1 = require("./auth.service");
-const login_Dto_1 = require("./dto/login.Dto");
 const passport_1 = require("@nestjs/passport");
-let AuthController = class AuthController {
+const passport_local_1 = require("passport-local");
+const auth_service_1 = require("../auth.service");
+let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)(passport_local_1.Strategy) {
     authService;
     constructor(authService) {
+        super();
         this.authService = authService;
     }
-    validateUser(loginDto) {
-        return this.authService.validateUser(loginDto);
+    validate(username, password) {
+        console.log('Inside LocalStrategy');
+        const user = this.authService.validateUser({ username, password });
+        if (!user)
+            throw common_1.UnauthorizedException;
+        return user;
     }
 };
-exports.AuthController = AuthController;
-__decorate([
-    (0, common_1.Post)('login'),
-    (0, common_1.UsePipes)(new common_1.ValidationPipe),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('local')),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_Dto_1.LoginDto]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "validateUser", null);
-exports.AuthController = AuthController = __decorate([
-    (0, common_1.Controller)('auth'),
+exports.LocalStrategy = LocalStrategy;
+exports.LocalStrategy = LocalStrategy = __decorate([
+    (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
-], AuthController);
-//# sourceMappingURL=auth.controller.js.map
+], LocalStrategy);
+//# sourceMappingURL=localStrategy.js.map

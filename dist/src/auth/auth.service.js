@@ -17,10 +17,13 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const userSchema_1 = require("../users/schema/userSchema");
+const jwt_1 = require("@nestjs/jwt");
 let AuthService = class AuthService {
     userModel;
-    constructor(userModel) {
+    jwtService;
+    constructor(userModel, jwtService) {
         this.userModel = userModel;
+        this.jwtService = jwtService;
     }
     async validateUser({ username, password }) {
         const findUser = await this.userModel.findOne({ username }).select('+password');
@@ -31,16 +34,25 @@ let AuthService = class AuthService {
         if (isMatch) {
             console.log('Login successful');
         }
-        else
-            throw new common_1.UnauthorizedException('Invalid password');
+        else {
+            return null;
+        }
         const { password: _, ...result } = findUser.toObject();
-        return result;
+        const payload = {
+            sub: result._id,
+            username: result.username
+        };
+        return {
+            access_token: this.jwtService.sign(payload, { expiresIn: '1h' }),
+            user: result
+        };
     }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(userSchema_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

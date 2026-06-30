@@ -1,9 +1,9 @@
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.Dto';
-export declare class AuthController {
+import { AuthService } from "../auth.service";
+declare const LocalStrategy_base: new (...args: any) => any;
+export declare class LocalStrategy extends LocalStrategy_base {
     private authService;
     constructor(authService: AuthService);
-    validateUser(loginDto: LoginDto): Promise<{
+    validate(username: string, password: string): Promise<{
         access_token: string;
         user: {
             username: string;
@@ -13,3 +13,4 @@ export declare class AuthController {
         };
     }>;
 }
+export {};
