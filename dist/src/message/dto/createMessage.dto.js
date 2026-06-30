@@ -13,7 +13,7 @@ exports.CreateMessageDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateMessageDto {
     messageBody;
-    receiverId;
+    receiverID;
 }
 exports.CreateMessageDto = CreateMessageDto;
 __decorate([
@@ -25,5 +25,5 @@ __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreateMessageDto.prototype, "receiverId", void 0);
+], CreateMessageDto.prototype, "receiverID", void 0);
 //# sourceMappingURL=createMessage.dto.js.map

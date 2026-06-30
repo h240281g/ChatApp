@@ -13,6 +13,7 @@ const message_controller_1 = require("./message.controller");
 const mongoose_1 = require("@nestjs/mongoose");
 const messageSchema_1 = require("./schema/messageSchema");
 const users_module_1 = require("../users/users.module");
+const userSchema_1 = require("../users/schema/userSchema");
 let MessageModule = class MessageModule {
 };
 exports.MessageModule = MessageModule;
@@ -23,6 +24,9 @@ exports.MessageModule = MessageModule = __decorate([
                     name: messageSchema_1.Message.name,
                     schema: messageSchema_1.MessageSchema
                 },
+                { name: userSchema_1.User.name,
+                    schema: userSchema_1.UserSchema
+                }
             ]), users_module_1.UsersModule],
         providers: [message_service_1.MessageService],
         controllers: [message_controller_1.MessageController],

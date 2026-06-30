@@ -36,6 +36,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UsePipes(new ValidationPipe)
   async getUserById(@Param('id') id: string) {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException('User not found');

@@ -20,8 +20,8 @@ export class UsersService {
   {
     const findUser = await this.userModel.findOne({username});
     if (!findUser) {
-        const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-  
+       // const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+       const hashedPassword=createUserDto.password
         const newUser = new this.userModel({
             username,
           ...createUserDto,
@@ -41,11 +41,11 @@ export class UsersService {
   }
 
   getUser(username: string) {
-    return this.userModel.findOne({ username }).populate(['settings','Posts']);
+    return this.userModel.findOne({ username });
   }
 
   async getUserById(id: string) {
-    const user = await this.userModel.findById(id).populate(['settings','Posts']);
+    const user = await this.userModel.findById(id);
     return user;
   }
 }
