@@ -32,6 +32,7 @@ $ npm install
 npm i --save class-validator class-transformer @nestjs/mapped-types mongoose mongoose @nestjs/jwt @nestjs/passport passport passport-local passport-jwt 
 npm install bcrypt
 npm install -D @types/bcrypt
+npm i @nestjs/config    
 ```
 
 ## Compile and run the project
