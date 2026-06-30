@@ -12,12 +12,21 @@ const users_module_1 = require("./users/users.module");
 const auth_module_1 = require("./auth/auth.module");
 const message_module_1 = require("./message/message.module");
 const mongoose_1 = require("@nestjs/mongoose");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [users_module_1.UsersModule, auth_module_1.AuthModule, message_module_1.MessageModule, mongoose_1.MongooseModule.forRoot('mongodb+srv://elias:Wayne1905@assignmentlab60.tp05cfm.mongodb.net/ChatApp')],
+        imports: [
+            users_module_1.UsersModule,
+            auth_module_1.AuthModule,
+            message_module_1.MessageModule,
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+            }),
+            mongoose_1.MongooseModule.forRoot(process.env.MONGODB_URI),
+        ],
         controllers: [],
         providers: [],
     })
