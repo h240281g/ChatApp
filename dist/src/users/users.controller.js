@@ -5,13 +5,49 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
+const users_service_1 = require("./users.service");
+const login_Dto_1 = require("../auth/dto/login.Dto");
+const createUserDto_1 = require("./dto/createUserDto");
 let UsersController = class UsersController {
+    userService;
+    constructor(userService) {
+        this.userService = userService;
+    }
+    validateUser(loginDto) {
+        return this.userService.validateUser(loginDto);
+    }
+    createUser({ username, ...createUserDto }) {
+        return this.userService.createUser({ username, ...createUserDto });
+    }
 };
 exports.UsersController = UsersController;
+__decorate([
+    (0, common_1.Post)('/auth'),
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [login_Dto_1.LoginDto]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "validateUser", null);
+__decorate([
+    (0, common_1.Post)(),
+    (0, common_1.UsePipes)(new common_1.ValidationPipe()),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [createUserDto_1.CreateUserDto]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "createUser", null);
 exports.UsersController = UsersController = __decorate([
-    (0, common_1.Controller)('users')
+    (0, common_1.Controller)('users'),
+    __metadata("design:paramtypes", [users_service_1.UsersService])
 ], UsersController);
 //# sourceMappingURL=users.controller.js.map

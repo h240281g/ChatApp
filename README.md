@@ -29,6 +29,9 @@
 
 ```bash
 $ npm install
+npm i --save class-validator class-transformer @nestjs/mapped-types mongoose mongoose @nestjs/jwt @nestjs/passport passport passport-local passport-jwt 
+npm install bcrypt
+npm install -D @types/bcrypt
 ```
 
 ## Compile and run the project
@@ -97,4 +100,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
-mongouri: mongodb+srv://elias:Wayne1905@assignmentlab60.tp05cfm.mongodb.net/
+
+
+
+
