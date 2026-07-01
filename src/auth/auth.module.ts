@@ -12,7 +12,7 @@ import { JwtStrategy } from './strategies/jwtStrategy';
 @Module({
   imports:[PassportModule,JwtModule.register({
     secret: 'abcd123',
-    signOptions: { expiresIn: '1h' }
+    signOptions: { expiresIn: '1d' }
   }),UsersModule,MongooseModule.forFeature(
       [
         {

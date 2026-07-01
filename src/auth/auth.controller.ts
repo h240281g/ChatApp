@@ -14,6 +14,7 @@ import { LoginDto } from './dto/login.Dto';
 import { AuthGuard } from '@nestjs/passport';
 import type { Request } from 'express';
 import { LocalGuard } from './guards/local.guard';
+import { JwtGuard } from './guards/jwt.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -22,16 +23,16 @@ export class AuthController {
   @Post('login')
   @UsePipes(new ValidationPipe())
   @UseGuards(LocalGuard)// Invoking our localStrategy
-  validateUser(@Body() loginDto: LoginDto) {
-    const user= this.authService.validateUser(loginDto);
-    return user;
+  validateUser(@Req()req: Request) {
+    return req.user
   }
 
   //Authenticated request
   @Get('status')
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(JwtGuard)
   status(@Req()req: Request){
     console.log('InsideController')
-    return  req.user
+    console.log(req.user);
+    return req.user
   }
 }
