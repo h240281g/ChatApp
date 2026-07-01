@@ -18,8 +18,9 @@ export class AuthService {
     if (!findUser) {
       return null;
     }
+    const isMatch = await bcrypt.compare(password,findUser.password);
 
-    const isMatch = password === findUser.password;
+   // const isMatch = password === findUser.password;
     if (isMatch) {
       console.log('Login successful');
     } else {
