@@ -21,12 +21,14 @@ async function login() {
             console.log("Login successful:", data);
 
             // Save the JWT if your backend returns one
-          if (data.access_token) {
-                localStorage.setItem("token", data.access_token);
+          if (data.accessJwtToken) {
+            localStorage.setItem("access_token",data.accessJwtToken);
+            window.location.href="chat.html";
+
             }
 
             alert("Login successful!");
-            
+
         } else {
             alert(data.message || "Login failed");
         }

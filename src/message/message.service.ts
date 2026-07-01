@@ -65,4 +65,10 @@ export class MessageService {
       return `All Validations Done on Sender and Receiver`
 
   }
+
+  async getAllUsers() {
+    
+    const users = await this.userModel.find().select('username')
+    return  users
+  }
 }

@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Chat</title>
+</head>
+
+<body>
+    
+    <label for="myID">myID</label>
+    <input id="myID" type="text" readonly="true"/>
+
+    <label for="myName">My Name</label>
+    <input id="myName" type="text" readonly="true"/>
+    <br><br>
+
+    <br><br>
+    <ol id="listofUsers">
+        list  of  clickable  users sorted 
+    </ol>
+
+    <ol id="listofMsgs">
+        list  of  messages sorted 
+    </ol>
+    
+        <label for="receiverID">ReceiverID</label>
+        <input id="receiverID" type="text" readonly="true"/>
+
+        <label for="receiverName">Receiver Name</label>
+        <input id="receiverName" type="text" readonly="true"/>
+        <br><br>
+
+
+        <label for="newMessage">Type Message</label>
+        <input id="newMessage" type="text" />
+        <br><br>
+        <button type="button" id="btnSendMsg" onclick="getUsers()">Send Message</button>
+    </form>
+
+    <script src="chat.js"></script>
+</body>
+
+</html>

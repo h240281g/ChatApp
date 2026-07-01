@@ -27,4 +27,9 @@ export class MessageController {
   async getMessages(@Body(ValidationPipe) { senderID, receiverID }) {
     return this.messageService.getMessages(senderID, receiverID);
   }
+
+  @Get('/users')
+  async getUsers() {
+    return this.messageService.getAllUsers();
+  }
 }
