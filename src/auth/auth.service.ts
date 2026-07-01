@@ -18,7 +18,7 @@ export class AuthService {
     if (!findUser) {
       throw new NotFoundException('User not Found');
     }
-   // const isMatch=bcrypt.compare(password,findUser.password)
+    
     const isMatch = password === findUser.password;
     if (isMatch) {
       console.log('Login successful');
