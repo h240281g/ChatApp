@@ -19,7 +19,7 @@ export class AuthController {
 
   @Post('login')
   @UsePipes(new ValidationPipe())
-  @UseGuards(AuthGuard('my-local'))// Invoking our localStrategy
+  @UseGuards(AuthGuard('local'))// Invoking our localStrategy
   validateUser(@Body() loginDto: LoginDto) {
     return this.authService.validateUser(loginDto);
   }
