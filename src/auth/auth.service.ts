@@ -16,9 +16,9 @@ export class AuthService {
   async validateUser({ username, password }: LoginDto) {
     const findUser = await this.userModel.findOne({ username }).select('+password');
     if (!findUser) {
-      throw new NotFoundException('User not Found');
+      return null;
     }
-    
+
     const isMatch = password === findUser.password;
     if (isMatch) {
       console.log('Login successful');
@@ -26,7 +26,7 @@ export class AuthService {
       return null;
     }
 
-    const { password: _, ...result } = findUser.toObject();// destructuring
+    const { password: _, ...result } = findUser.toObject();// destructuring we exclude password 
 
     const payload = { 
       sub: result._id,// this is user id
@@ -34,7 +34,7 @@ export class AuthService {
     };
 
     return {
-      access_token: this.jwtService.sign(payload, { expiresIn: '1h' }),
+      accessJwtToken: this.jwtService.sign(payload, { expiresIn: '1h' }),// generating Jwt token with the sign method
       user: result 
     };
   }

@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/users/schema/userSchema';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/localStrategy';
+import { JwtStrategy } from './strategies/jwtStrategy';
 
 @Module({
   imports:[PassportModule,JwtModule.register({
@@ -20,7 +21,7 @@ import { LocalStrategy } from './strategies/localStrategy';
         }
       ]
     )],
-  providers: [AuthService,LocalStrategy],
+  providers: [AuthService,LocalStrategy,JwtStrategy],
   controllers: [AuthController],
   exports:[AuthService,AuthModule]
 })
