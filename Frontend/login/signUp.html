@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Register Page</title>
+    <link rel="stylesheet" href="signUp.css">
+  </head>
+
+  <body>
+    <form id="RegisterForm">
+      <label for="username">Username</label>
+      <input id="username" type="text" required />
+
+      <br /><br />
+
+      <label for="password">Password</label>
+      <input id="password" type="password" required />
+
+      <br /><br />
+      <label for="fullname">Fullname</label>
+      <input id="fullname" type="text" required />
+
+      <br /><br />
+      <label for="email">Email</label>
+      <input id="email" type="email" required />
+
+      <br /><br />
+      <button type="button" id="btnCreateUser" onclick="createUser()">
+        Create Accout
+      </button>
+      <button type="button" id="btnSup" onclick="gotoLog()">Login</button>
+    </form>
+
+    <script src="signUp.js"></script>
+  </body>
+</html>

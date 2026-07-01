@@ -29,12 +29,7 @@ export class UsersController {
     const user = this.userService.getUser(username);
     return user;
   }
-  @Get() //DISTINCT ROUTES
-  geAlltUsers() {
-    const user = this.userService.getAllUsers();
-    return user;
-  }
-
+ 
   @Get(':id')
   @UsePipes(new ValidationPipe)
   async getUserById(@Param('id') id: string) {

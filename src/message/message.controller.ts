@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -22,7 +23,7 @@ export class MessageController {
     @Body() createMsgDto: CreateMessageDto, ) {
     return this.messageService.createMsg(senderID, createMsgDto);
   }
-  @Get()
+  @Post()
   @UsePipes(new ValidationPipe())
   async getMessages(@Body(ValidationPipe) { senderID, receiverID }) {
     return this.messageService.getMessages(senderID, receiverID);
@@ -31,5 +32,12 @@ export class MessageController {
   @Get('/users')
   async getUsers() {
     return this.messageService.getAllUsers();
+  }
+
+@Delete(':id')
+@UsePipes(new ValidationPipe())
+  async deleteMessage(@Param('id')id:string)
+  {
+    return  this.messageService.deleteMessage(id)
   }
 }

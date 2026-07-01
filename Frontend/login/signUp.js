@@ -1,10 +1,11 @@
 
-async function login() {
+async function createUser() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
-
+    const email = document.getElementById("email").value;
+    const fullname= document.getElementById("fullname").value;
     try {
-        const response = await fetch("http://localhost:3000/auth/login", {
+        const response = await fetch("http://localhost:3000/users", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -12,32 +13,26 @@ async function login() {
             body: JSON.stringify({
                 username,
                 password,
+                fullname,
+                email
             }),
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            console.log("Login successful:");
-
-            // Save the JWT if your backend returns one
-          if (data.accessJwtToken) {
-            localStorage.setItem("access_token",data.accessJwtToken);
-            window.location.href="chat.html";
-
-            }
-
-            alert("Login successful!");
+            console.log("Create User successful:");
+            gotoLog()
 
         } else {
-            alert(data.message || "Login failed");
+            alert(data.message || "Create User failed");
         }
     } catch (error) {
         console.error(error);
         alert("Unable to connect to the server.");
     }
 }
-function gotoSUP(){
-    window.location.href="signUp.html";
+function gotoLog(){
+    window.location.href="login.html";
 
 }

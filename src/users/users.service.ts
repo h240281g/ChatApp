@@ -44,9 +44,7 @@ export class UsersService {
     else throw new ConflictException("Username already exists");
    
   }
-  async getAllUsers() {
-    return await this.userModel.find();
-  }
+ 
 
   getUser(username: string) {
     return this.userModel.findOne({ username });

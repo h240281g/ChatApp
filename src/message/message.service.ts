@@ -42,14 +42,20 @@ export class MessageService {
   async getMessages(senderID: string, receiverID: string) {
     await this.validateObjectIDSR(senderID, receiverID);
     return await this.messageModel
-      .find({
-        $or: [
-          { senderID, receiverID },
-          { receiverID, senderID },
-        ],
-      })
-      .select('messageBody createdAt -_id')
-      .sort({ createdAt: 1 });
+  .find({
+    $or: [
+      {
+        senderID: senderID,
+        receiverID: receiverID,
+      },
+      {
+        senderID: receiverID,
+        receiverID: senderID,
+      },
+    ],
+  })
+  .select("messageBody senderID receiverID createdAt _id")
+  .sort({ createdAt: 1 });
   }
   async validateObjectIDSR(senderID: string, receiverID: string) {
   
@@ -68,7 +74,21 @@ export class MessageService {
 
   async getAllUsers() {
     
-    const users = await this.userModel.find().select('username')
+    const users = await this.userModel.find().select('username fullname')
     return  users
+  }
+
+  
+  async deleteMessage(id:string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new NotFoundException('Incorrect Format:  Verify message ObjectID');
+  }
+  const message = await this.messageModel.findById(id);
+
+  if (!message) {
+    throw new NotFoundException('message Not Found:  Verify message ObjectID');
+  }
+    return  await this.messageModel.findByIdAndDelete(id)
+    
   }
 }
