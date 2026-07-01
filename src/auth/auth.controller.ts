@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
   Post,
   Req,
   UseGuards,
@@ -12,6 +13,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.Dto';
 import { AuthGuard } from '@nestjs/passport';
 import type { Request } from 'express';
+import { LocalGuard } from './guards/local.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -19,9 +21,10 @@ export class AuthController {
 
   @Post('login')
   @UsePipes(new ValidationPipe())
-  @UseGuards(AuthGuard('local'))// Invoking our localStrategy
+  @UseGuards(LocalGuard)// Invoking our localStrategy
   validateUser(@Body() loginDto: LoginDto) {
-    return this.authService.validateUser(loginDto);
+    const user= this.authService.validateUser(loginDto);
+    return user;
   }
 
   //Authenticated request
