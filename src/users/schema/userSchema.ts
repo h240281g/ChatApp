@@ -12,6 +12,9 @@ fullname: string
 @Prop({required: true,select:false})
 password: string
 
+@Prop ({required:true})
+email:string
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
