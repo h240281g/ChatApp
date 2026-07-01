@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, Injectable, UnauthorizedException } from "@nestjs/common";
+import {Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy} from 'passport-local';
 import { AuthService } from "../auth.service";
@@ -8,9 +8,10 @@ export class LocalStrategy extends PassportStrategy(Strategy){
         super();
     }
 
-    validate(username:string, password:string){
-        const user = this.authService.validateUser({username,password});
-        if (!user) throw ConflictException;
+    async validate(username:string, password:string){
+        console.log('Second Strategy')
+        const user = await this.authService.validateUser({username,password});
+        if (!user) throw new UnauthorizedException();
         return user;
     }
 }

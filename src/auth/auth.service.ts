@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/users/schema/userSchema';
@@ -18,12 +18,11 @@ export class AuthService {
     if (!findUser) {
       return null;
     }
-    const isMatch = await bcrypt.compare(password,findUser.password);
-
+  
+   const isMatch = await bcrypt.compare(password, findUser.password)
     if (isMatch) {
       console.log('Login successful');
-    } else {
-      return null;
+    } else { return null;
     }
 
     const { password: _, ...result } = findUser.toObject();// destructuring we exclude password 
@@ -35,7 +34,6 @@ export class AuthService {
 
     return {
       accessJwtToken: this.jwtService.sign(payload, { expiresIn: '1h' }),// generating Jwt token with the sign method
-      user: result 
     };
   }
 }
