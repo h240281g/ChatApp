@@ -79,6 +79,7 @@ async function getMessages() {
                         let MID = message._id;
                         deleteMessage(MID);
                     };
+                    
                 });
             }
             else {
@@ -145,13 +146,14 @@ function appendMessageToChat(message, outgoing) {
 
     if (outgoing) {
         p.classList.add("sent");
+        chat.appendChild(p);
 
     } else {
         p.classList.add("received");
+        chat.appendChild(p);
 
     }
 
-    chat.appendChild(p);
 }
 
 async function sendMessage() {
@@ -209,11 +211,14 @@ socket.on('connect', () => {
 });
 
 socket.on('newMessage', (message) => {
+    const currentReceiver = document.getElementById("receiverID")
+        ? document.getElementById("receiverID").value
+        : null;
 
-    if (message.receiverID === myID && message.senderID === receiverID) {
+    if (message.receiverID === myID && message.senderID === currentReceiver) {
         appendMessageToChat(message, false);
     }
-    if (message.senderID === myID && message.receiverID === receiverID) {
+    if (message.senderID === myID && message.receiverID === currentReceiver) {
         appendMessageToChat(message, true);
     }
 });
