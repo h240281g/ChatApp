@@ -142,6 +142,9 @@ button {
    
 
 }
+#userOptions[hidden] {
+    display: none;
+}
 #btnLogout {
     margin-top: 20px;
 }

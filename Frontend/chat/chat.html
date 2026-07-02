@@ -8,7 +8,12 @@
   <body>
     <form id="senderForm">
       <strong><label id="myName">My Name</label></strong>
-      <div id="userOptions">
+      <button type="button" id="btnShowOps" onclick="showOps()">Show User Options
+        </button>
+
+      
+    </form>
+    <form id="userOptions" hidden>
         <button type="button" id="btnDeleteUser" onclick="deleteUser()">
           Delete My Account
         </button>
@@ -16,8 +21,7 @@
           Show Update Account Form
         </button>
         <button type="button" id="btnLogout" onclick="logout()">Logout</button>
-      </div>
-    </form>
+      </form>
     <form id="updateUserForm" hidden>
       <label for="username">Username</label>
       <input id="username" type="text" required />
