@@ -290,6 +290,19 @@ function updateShow() {
     }
 
 }
+function showOps() {
+    const tooglebtn = document.getElementById('btnShowOps');
+    const opsDiv = document.getElementById('userOptions');
+
+    if (opsDiv.hidden) {
+        opsDiv.hidden = false;
+        tooglebtn.innerText = "Hide User Options";
+       
+    } else {
+        opsDiv.hidden = true;
+        tooglebtn.innerText = "Show User Options";
+    }
+} // <-- Added this missing closing brace
 function cancel() {
     const username = document.getElementById("username");
     const password = document.getElementById("password");
