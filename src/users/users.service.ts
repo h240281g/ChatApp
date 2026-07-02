@@ -1,5 +1,5 @@
 import {
-    ConflictException,
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -15,36 +15,30 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  
-  async createUser({username,email,...createUserDto}: CreateUserDto) 
-  {
-    const findUserEmail = await this.userModel.findOne({email});
+  async createUser({ username, email, ...createUserDto }: CreateUserDto) {
+    const findUserEmail = await this.userModel.findOne({ email });
 
-    if (findUserEmail)
-    {
-      throw new ConflictException("Email already exists");
-
+    if (findUserEmail) {
+      throw new ConflictException('Email already exists');
     }
 
-    const findUser = await this.userModel.findOne({username});
+    const findUser = await this.userModel.findOne({ username });
     if (!findUser) {
-       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-       //   const hashedPassword=createUserDto.password
-        const newUser = new this.userModel({
-            username,email,
-          ...createUserDto,
-          password: hashedPassword,
-        });
-      
-         await newUser.save();
-         
-         const { password: _, ...result } = newUser.toObject();
-        return result;
-    }
-    else throw new ConflictException("Username already exists");
-   
+      const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+      //   const hashedPassword=createUserDto.password
+      const newUser = new this.userModel({
+        username,
+        email,
+        password: hashedPassword,
+        ...createUserDto,
+      });
+
+      await newUser.save();
+
+      const { password: _, ...result } = newUser.toObject();
+      return result;
+    } else throw new ConflictException('Username already exists');
   }
- 
 
   getUser(username: string) {
     return this.userModel.findOne({ username });

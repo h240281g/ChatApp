@@ -23,7 +23,7 @@ async function login() {
             // Save the JWT if your backend returns one
           if (data.accessJwtToken) {
             localStorage.setItem("access_token",data.accessJwtToken);
-            window.location.href="chat.html";
+            window.location.href="../chat/chat.html";
 
             }
 

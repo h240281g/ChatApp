@@ -1,4 +1,7 @@
 const token = localStorage.getItem("access_token");
+const socket = io('http://localhost:3000', {
+    auth: { token }
+});
 
 if (!token || isTokenExpired(token)) {
     logout();
@@ -12,10 +15,8 @@ function isTokenExpired(token) {
 function logout() {
 
     localStorage.removeItem("access_token");
-    window.location.href = "login.html";
+    window.location.href = "../login/login.html";
 }
-
-
 
 async function getMessages() {
     const receiverID = document.getElementById("receiverID").value;
@@ -40,7 +41,6 @@ async function getMessages() {
                     });
 
             const data = await response.json();
-            console.table(data)
             const chat = document.getElementById("chat");
 
             if (response.ok) {
@@ -75,8 +75,8 @@ async function getMessages() {
 
                     p.style.cursor = "pointer";
                     p.ondblclick = () => {
-            
-                       let MID= message._id;
+
+                        let MID = message._id;
                         deleteMessage(MID);
                     };
                 });
@@ -124,6 +124,31 @@ async function getUsers() {
     });
 }
 
+function appendMessageToChat(message, outgoing) {
+    const chat = document.getElementById("chat");
+    const p = document.createElement("p");
+    const time = new Date(message.createdAt).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+
+    p.innerHTML = `
+        ${message.messageBody}
+        <br>
+        <small>${time}</small>
+    `;
+
+    if (outgoing) {
+        p.style.color = "red";
+        p.style.textAlign = "right";
+    } else {
+        p.style.color = "black";
+        p.style.textAlign = "left";
+    }
+
+    chat.appendChild(p);
+}
+
 async function sendMessage() {
 
     const senderID = document.getElementById("myID").value;
@@ -162,16 +187,65 @@ async function sendMessage() {
     }
 }
 
+
+
 async function loadCurrentUser() {
     const payload = JSON.parse(atob(token.split(".")[1]));
     document.getElementById("myID").value = payload.sub;
     document.getElementById("myName").value = payload.username;
+
+    if (socket.connected) {
+        socket.emit('joinRoom', { userID: payload.sub });
+    }
 }
 
-async function deleteMessage(MID)
-{
-console.log(MID)
+socket.on('connect', () => {
+    const myID = document.getElementById("myID")?.value;
+    if (myID) {
+        socket.emit('joinRoom', { userID: myID });
+    }
+});
+
+socket.on('newMessage', (message) => {
+    const myID = document.getElementById("myID").value;
+    const receiverID = document.getElementById("receiverID").value;
+
+    if (message.receiverID === myID && message.senderID === receiverID) {
+        appendMessageToChat(message, false);
+    }
+    if (message.senderID === myID && message.receiverID === receiverID) {
+        appendMessageToChat(message, true);
+    }
+});
+
+async function deleteMessage(MID) {
+
+    try {
+        const response = await fetch(`http://localhost:3000/message/${MID}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log("message DELETED successfully:");
+            getMessages()
+
+        } else {
+            alert(data.message || "message delete    failed");
+        }
+    }
+    catch (error) {
+        console.error(error);
+        alert("Unable to connect to the server.");
+    }
 }
+
 window.onload = async () => {
     await loadCurrentUser();
     await getUsers();
