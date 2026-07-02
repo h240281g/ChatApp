@@ -27,68 +27,68 @@ export class MessageService {
   }
   async getUserById(id: string) {
     if (!Types.ObjectId.isValid(id)) {
-        throw new NotFoundException('Incorrect Format:  Verify User or Receiver ObjectIDs');
-
+      throw new NotFoundException(
+        'Incorrect Format:  Verify User or Receiver ObjectIDs',
+      );
     }
     const user = await this.userModel.findById(id);
 
     if (!user) {
-      throw new NotFoundException('User Not Found:  Verify User or Receiver ObjectIDs');
+      throw new NotFoundException(
+        'User Not Found:  Verify User or Receiver ObjectIDs',
+      );
     }
 
-    return  `correct & exists: true`
+    return `correct & exists: true`;
   }
 
   async getMessages(senderID: string, receiverID: string) {
     await this.validateObjectIDSR(senderID, receiverID);
     return await this.messageModel
-  .find({
-    $or: [
-      {
-        senderID: senderID,
-        receiverID: receiverID,
-      },
-      {
-        senderID: receiverID,
-        receiverID: senderID,
-      },
-    ],
-  })
-  .select("messageBody senderID receiverID createdAt _id")
-  .sort({ createdAt: 1 });
+      .find({
+        $or: [
+          {
+            senderID: senderID,
+            receiverID: receiverID,
+          },
+          {
+            senderID: receiverID,
+            receiverID: senderID,
+          },
+        ],
+      })
+      .select('messageBody senderID receiverID createdAt _id')
+      .sort({ createdAt: 1 });
   }
   async validateObjectIDSR(senderID: string, receiverID: string) {
-  
-      const sender = await this.getUserById(senderID);
-      if (!sender) {
-        throw new NotFoundException('Sender not found');
-      }
-      const receiver = await this.getUserById(receiverID);
-      if (!receiver) {
-        throw new NotFoundException('Receiver not found');
-      }
-            
-      return `All Validations Done on Sender and Receiver`
+    const sender = await this.getUserById(senderID);
+    if (!sender) {
+      throw new NotFoundException('Sender not found');
+    }
+    const receiver = await this.getUserById(receiverID);
+    if (!receiver) {
+      throw new NotFoundException('Receiver not found');
+    }
 
+    return `All Validations Done on Sender and Receiver`;
   }
 
   async getAllUsers() {
-    
-    const users = await this.userModel.find().select('username fullname')
-    return  users
+    const users = await this.userModel.find().select('username fullname');
+    return users;
   }
 
-  
-  async deleteMessage(id:string) {
+  async deleteMessage(id: string) {
     if (!Types.ObjectId.isValid(id)) {
       throw new NotFoundException('Incorrect Format:  Verify message ObjectID');
-  }
-  const message = await this.messageModel.findById(id);
+    }
+    const message = await this.messageModel.findById(id);
 
-  if (!message) {
-    throw new NotFoundException('message Not Found:  Verify message ObjectID');
-  }
-    return  await this.messageModel.findByIdAndDelete(id)
-    
+    if (!message) {
+      throw new NotFoundException(
+        'message Not Found:  Verify message ObjectID',
+      );
+    }
+    return await this.messageModel.findByIdAndDelete(id);
   }
 }

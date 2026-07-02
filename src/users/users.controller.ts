@@ -7,12 +7,15 @@ import {
   Get,
   Param,
   NotFoundException,
+  Delete,
+  Patch,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
 import { LoginDto } from 'src/auth/dto/login.Dto';
 import { CreateUserDto } from './dto/createUserDto';
 import { Types } from 'mongoose';
+import { UpdateUserDto } from './dto/updateUserDto';
 
 @Controller('users')
 export class UsersController {
@@ -45,4 +48,19 @@ export class UsersController {
 
     return user;
   }
+
+  @Delete(':id')
+  @UsePipes(new ValidationPipe())
+    async deleteMessage(@Param('id')id:string)
+    {
+      return  this.userService.deleteUser(id)
+    }
+
+    @Patch(':id')
+    @UsePipes(new ValidationPipe())
+    async updateUser(@Param('id')id:string,@Body()updateUserDto:UpdateUserDto)
+    {
+      return  await this.userService.updateUser(id,updateUserDto);
+    }
+
 }

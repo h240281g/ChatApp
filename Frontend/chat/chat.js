@@ -1,15 +1,14 @@
 const token = localStorage.getItem("access_token");
-const socket = io('http://localhost:3000', {
-    auth: { token }
-});
+const socket = io('http://localhost:3000', { auth: { token } });
+const userDoc = JSON.parse(atob(token.split(".")[1]));
+const myID = userDoc.sub;
 
 if (!token || isTokenExpired(token)) {
     logout();
 }
 
 function isTokenExpired(token) {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.exp * 1000 < Date.now();
+    return userDoc.exp * 1000 < Date.now();
 }
 
 function logout() {
@@ -19,8 +18,9 @@ function logout() {
 }
 
 async function getMessages() {
+    const senderID = myID;
     const receiverID = document.getElementById("receiverID").value;
-    const senderID = document.getElementById("myID").value;
+
     if (!senderID || !receiverID) {
         alert("IDS Required")
     }
@@ -63,13 +63,13 @@ async function getMessages() {
                 `;
 
                     if (message.senderID === senderID) {
-                        p.style.color = "red";
-                        p.style.textAlign = "right";
+
+                        p.classList.add("sent");
                         chat.appendChild(p);
                     }
                     else {
-                        p.style.color = "black";
-                        p.style.textAlign = "left";
+
+                        p.classList.add("received");
                         chat.appendChild(p);
                     }
 
@@ -110,13 +110,18 @@ async function getUsers() {
     users.forEach(user => {
 
         const p = document.createElement("p");
+        if (user.fullname == userDoc.fullname) {
+            p.textContent = `${user.fullname} (You)`;
+            p.style.cursor = "pointer";
 
-        p.textContent = user.fullname;
-        p.style.cursor = "pointer";
+        } else {
+            p.textContent = user.fullname;
+            p.style.cursor = "pointer";
+        }
         p.onclick = () => {
 
             document.getElementById("receiverID").value = user._id;
-            document.getElementById("receiverName").value = user.fullname;
+            document.getElementById("receiverName").innerText = user.fullname;
             getMessages();
         };
 
@@ -139,11 +144,11 @@ function appendMessageToChat(message, outgoing) {
     `;
 
     if (outgoing) {
-        p.style.color = "red";
-        p.style.textAlign = "right";
+        p.classList.add("sent");
+
     } else {
-        p.style.color = "black";
-        p.style.textAlign = "left";
+        p.classList.add("received");
+
     }
 
     chat.appendChild(p);
@@ -151,7 +156,7 @@ function appendMessageToChat(message, outgoing) {
 
 async function sendMessage() {
 
-    const senderID = document.getElementById("myID").value;
+    const senderID = myID;
     const receiverID = document.getElementById("receiverID").value;
     const messageBody = document.getElementById("newMessage").value;
     if (!senderID || !receiverID || !messageBody) {
@@ -174,7 +179,7 @@ async function sendMessage() {
             const data = await response.json();
 
             if (response.ok) {
-                console.log("message sent successfully:");
+                alert("message sent successfully:");
                 getMessages()
 
             } else {
@@ -190,25 +195,20 @@ async function sendMessage() {
 
 
 async function loadCurrentUser() {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    document.getElementById("myID").value = payload.sub;
-    document.getElementById("myName").value = payload.username;
+    document.getElementById("myName").innerText= userDoc.fullname;
 
     if (socket.connected) {
-        socket.emit('joinRoom', { userID: payload.sub });
+        socket.emit('joinRoom', { userID: userDoc.sub });
     }
 }
 
 socket.on('connect', () => {
-    const myID = document.getElementById("myID")?.value;
     if (myID) {
         socket.emit('joinRoom', { userID: myID });
     }
 });
 
 socket.on('newMessage', (message) => {
-    const myID = document.getElementById("myID").value;
-    const receiverID = document.getElementById("receiverID").value;
 
     if (message.receiverID === myID && message.senderID === receiverID) {
         appendMessageToChat(message, false);
@@ -233,7 +233,7 @@ async function deleteMessage(MID) {
         const data = await response.json();
 
         if (response.ok) {
-            console.log("message DELETED successfully:");
+            alert("message DELETED successfully:");
             getMessages()
 
         } else {
@@ -245,6 +245,103 @@ async function deleteMessage(MID) {
         alert("Unable to connect to the server.");
     }
 }
+
+async function deleteUser() {
+    try {
+        const response = await fetch(`http://localhost:3000/users/${myID}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert("userDELETED successfully:");
+            logout()
+
+        } else {
+            alert(data.message || "user delete    failed");
+        }
+    }
+    catch (error) {
+        console.error(error);
+        alert("Unable to connect to the server.");
+    }
+}
+function updateShow() {
+    const updateForm = document.getElementById('updateUserForm');
+    const toogle = document.getElementById('btnUpdateShow');
+
+    if (!updateForm.hidden) {
+        updateForm.hidden = true;
+        toogle.innerText = "Show  Update  Account Form";
+    } else {
+        updateForm.hidden = false;
+        toogle.innerText = "Hide  Update  Account Form";
+    }
+
+}
+function cancel() {
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+    const email = document.getElementById("email");
+    const fullname = document.getElementById("fullname");
+    const updateForm = document.getElementById('updateUserForm');
+    const toogle = document.getElementById('btnUpdateShow');
+
+    username.value = "";
+    password.value = "";
+    email.value = "";
+    fullname.value = "";
+
+    updateForm.hidden = true;
+    toogle.innerText = "Show  Update  Account Form";
+
+
+}
+
+async function updateUser() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value;
+    const fullname = document.getElementById("fullname").value;
+    const body = {};
+
+    if (username) body.username = username;
+    if (password) body.password = password;
+    if (email) body.email = email;
+    if (fullname) body.fullname = fullname;
+
+    try {
+        const response = await fetch(`http://localhost:3000/users/${myID}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(body),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert("Update User successful:");
+            cancel();
+
+
+        } else {
+            alert(data.message || "Update User failed");
+        }
+    } catch (error) {
+        console.error(error);
+        alert("Unable to connect to the server.");
+    }
+}
+
 
 window.onload = async () => {
     await loadCurrentUser();

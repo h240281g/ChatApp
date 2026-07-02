@@ -24,17 +24,17 @@ export class AuthService {
       console.log('Login successful');
     } else { return null;
     }
-    const user= await this.userModel.findOne({ username });
 
     const { password: _, ...result } = findUser.toObject();// destructuring we exclude password 
 
     const payload = { 
       sub: result._id,// this is user id
-      username: result.username 
+      username: result.username ,
+      fullname:result.fullname
     };
 
     return {
-      accessJwtToken: this.jwtService.sign(payload, { expiresIn: '1d' }),user
+      accessJwtToken: this.jwtService.sign(payload, { expiresIn: '1d' })
        // generating Jwt token with the sign method
     };
   }

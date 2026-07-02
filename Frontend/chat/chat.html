@@ -2,47 +2,68 @@
 <html>
   <head>
     <title>Chat</title>
-    <link rel="stylesheet" href="chat.css">
+    <link rel="stylesheet" href="chat.css" />
   </head>
 
   <body>
     <form id="senderForm">
-      <input id="myID" type="text" readonly hidden="true"/>
-
-      <label for="myName">My Name</label>
-      <input id="myName" type="text" readonly />
+      <strong><label id="myName">My Name</label></strong>
+      <div id="userOptions">
+        <button type="button" id="btnDeleteUser" onclick="deleteUser()">
+          Delete My Account
+        </button>
+        <button type="button" id="btnUpdateShow" onclick="updateShow()">
+          Show Update Account Form
+        </button>
+        <button type="button" id="btnLogout" onclick="logout()">Logout</button>
+      </div>
     </form>
+    <form id="updateUserForm" hidden>
+      <label for="username">Username</label>
+      <input id="username" type="text" required />
 
-    <br /><br />
-    <label for="listOfUsers">List of Users</label>
-    
-    <div id="listOfUsers">
-      
-    </div>
+      <br /><br />
 
-    <br /><br />
+      <label for="password">Password</label>
+      <input id="password" type="password" required />
 
-    <form id="receiverForm">
-      <input id="receiverID" type="text" readonly hidden="true"/>
+      <br /><br />
+      <label for="fullname">Fullname</label>
+      <input id="fullname" type="text" required />
 
-      <label for="receiverName">Sending To:</label>
-      <input id="receiverName" type="text" readonly="true" />
-    </form>
-    <br /><br />
+      <br /><br />
+      <label for="email">Email</label>
+      <input id="email" type="email" required />
 
-    <div id="chat">list of chats</div>
-
-    <br /><br />
-    <form id="messageForm">
-      <label for="newMessage">Type Message</label>
-      <input id="newMessage" type="text" required="true" />
-      <button type="button" id="btnSendMsg" onclick="sendMessage()">
-        send Message
+      <br /><br />
+      <button type="button" id="btnUpdateUser" onclick="updateUser()">
+        Update User
       </button>
+      <button type="button" id="btnSup" onclick="cancel()">cancel</button>
     </form>
     <br /><br />
-    <button type="button" id="btnLogout" onclick="logout()">Logout</button>
+    <div id="Mctr">
+      <div id="Lctr">
+        <label for="listOfUsers">List of Users</label>
 
+        <div id="listOfUsers"></div>
+      </div>
+      <div id="Cctr">
+        <form id="messageDetails">
+          <input id="receiverID" type="text" readonly hidden="true" />
+          <strong><label id="receiverName">receiverName</label></strong>
+          <br />
+          <div id="chat">list of chats</div>
+
+          <br /><br />
+         <strong> <label for="newMessage">Message</label></strong>
+          <input id="newMessage" type="text" required="true" />
+          <button type="button" id="btnSendMsg" onclick="sendMessage()">
+            send Message
+          </button>
+        </form>
+      </div>
+    </div>
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
     <script src="chat.js"></script>
   </body>

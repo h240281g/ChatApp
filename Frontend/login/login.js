@@ -18,19 +18,24 @@ async function login() {
         const data = await response.json();
 
         if (response.ok) {
-            console.log("Login successful:");
+            
 
             // Save the JWT if your backend returns one
-          if (data.accessJwtToken) {
+          if (data.accessJwtToken) 
+            {
             localStorage.setItem("access_token",data.accessJwtToken);
             window.location.href="../chat/chat.html";
+
+            }else
+            {
+                alert("toke failed!");
 
             }
 
             alert("Login successful!");
 
         } else {
-            alert(data.message || "Login failed");
+            alert("Login failed, wrong username or password ");
         }
     } catch (error) {
         console.error(error);
@@ -38,6 +43,6 @@ async function login() {
     }
 }
 function gotoSUP(){
-    window.location.href="signUp.html";
+    window.location.href="../signUp/signUp.html";
 
 }

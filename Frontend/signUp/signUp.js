@@ -21,7 +21,7 @@ async function createUser() {
         const data = await response.json();
 
         if (response.ok) {
-            console.log("Create User successful:");
+            alert("Create User successful:");
             gotoLog()
 
         } else {
@@ -33,6 +33,6 @@ async function createUser() {
     }
 }
 function gotoLog(){
-    window.location.href="login.html";
+    window.location.href="../login/login.html";
 
 }
