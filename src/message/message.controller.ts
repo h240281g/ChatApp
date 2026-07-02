@@ -11,17 +11,25 @@ import {
 } from '@nestjs/common';
 import { CreateMessageDto } from './dto/createMessage.dto';
 import { MessageService } from './message.service';
+import { MessageGateway } from './message.gateway';
 import { Types } from 'mongoose';
 
 @Controller('message')
 export class MessageController {
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private messageGateway: MessageGateway,
+  ) {}
+
   @Post(':id')
   @UsePipes(new ValidationPipe())
   async createMsg(
     @Param('id') senderID: string,
-    @Body() createMsgDto: CreateMessageDto, ) {
-    return this.messageService.createMsg(senderID, createMsgDto);
+    @Body() createMsgDto: CreateMessageDto,
+  ) {
+    const message = await this.messageService.createMsg(senderID, createMsgDto);
+    this.messageGateway.sendNewMessage(message);
+    return message;
   }
   @Post()
   @UsePipes(new ValidationPipe())

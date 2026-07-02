@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Message, MessageSchema } from './schema/messageSchema';
 import { UsersModule } from 'src/users/users.module';
 import { User, UserSchema } from 'src/users/schema/userSchema';
+import { MessageGateway } from './message.gateway';
 
 @Module({
   imports:[MongooseModule.forFeature(
@@ -19,8 +20,8 @@ import { User, UserSchema } from 'src/users/schema/userSchema';
       
       ]
     ), UsersModule],
-  providers: [MessageService],
+  providers: [MessageService, MessageGateway],
   controllers: [MessageController],
-  exports:[MessageService,MessageModule]
+  exports:[MessageService]
 })
 export class MessageModule {}
